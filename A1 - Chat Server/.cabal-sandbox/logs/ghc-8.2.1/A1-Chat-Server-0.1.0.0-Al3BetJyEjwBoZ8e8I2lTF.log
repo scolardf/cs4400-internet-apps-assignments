@@ -1,0 +1,5 @@
+Installing executable A1-Chat-Server in P:\College\cs4400-internet-apps-assignments\A1 - Chat Server\.cabal-sandbox\bin
+Server-0.1.0.0..
+[1 of 1] Compiling Main             ( Main.hs, dist\dist-sandbox-2b9f62f6\build\A1-Chat-Server\A1-Chat-Server-tmp\Main.o )
+Linking dist/dist-sandbox-2b9f62f6\build\A1-Chat-Server\A1-Chat-Server.exe ...
+cabal: Leaving directory '.'
