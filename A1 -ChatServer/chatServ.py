@@ -1,5 +1,4 @@
-import socket
-import select
+import socket, select
 
 # Dictionary - (client, roomNumber)
 # while waiting to choose a room, roomNumber = 0
@@ -7,14 +6,12 @@ clientList = []
 print("Client List made")
 
 PORT = 8080
-print("Port Num Made")
 
 sockServer = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 print("SockServer initialized")
 
 sockServer.bind(("localhost", PORT))
-print("SockServer bound")
-sockServer.listen()
+sockServer.listen(5)
 print("SockServer listening")
 
 # chatrooms = []
@@ -40,41 +37,41 @@ print("SockServer listening")
 # 			print("ERROR: User " + user + " not found in Room " + self.name)
 
 clientList.append(sockServer)
-print("- Server running on Port " + str(PORT))
+print("--Server running on Port " + str(PORT))
 
 def broadcast(client, message):
-	for sock in clientList:
-		if sock is not client and sock is not sockServer:
+	for s in clientList:
+		if s is not client and s is not sockServer:
 			try:
-				sock.send(message)
+				s.send(message)
 			except:
-				sock.close()
-				clientList.remove(sock)
+				s.close()
+				clientList.remove(s)
 
 while True:
 	read, write, error = select.select(clientList, [], [])
 
 	for sock in read:
-		if sock is sockServer:
-			newConn, newAddress = sockServer.accept()
-			clientList.append(newConn)
-
-			print("-- New Client: " + str(newConn))
-			broadcast(newConn, str(newAddress) + " entered the room \n")
-
-		else:
+		if sock is not sockServer:
 			try:
-				newData = sock.recv(4096)
+				data = sock.recv(4096)
 
-				if newData:
-					broadcast(sock, "\n" + str(sock.getPeerName()) + "- " + newData)
+				if data:
+					broadcast(sock, "\r" + str(sock.getpeername()) + "> " + data)
 
-				if newData.split("\n")[0] == "EXIT":
-					broadcast(sock, "\n" + str(sock.getPeerName()) + " left the room")
-					print("-- Client: " + str(sock) + " left room")
+				if data.split("\n")[0] == "exit":
+					broadcast(sock, "\r" + str(sock.getpeername()) + " left the room")
+					print "Client " + str(addr) + " left"
 					sock.close()
 					clientList.remove(sock)
 					continue
-
 			except:
 				continue
+		else:
+			newConn, newAddr = sockServer.accept()
+			clientList.append(newConn)
+
+			print "Client " + str(newAddr) + " joined"
+			broadcast(newConn, "\r" + str(newAddr) + " joined the room")
+
+sockServer.close()

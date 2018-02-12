@@ -10,7 +10,7 @@ except:
 
 print("-- Joined Chat Server\r")
 print("Type 'EXIT' to leave chat\r")
-sys.stdout.write("Me:")
+sys.stdout.write('> ')
 sys.stdout.flush()
 
 while True:
@@ -22,9 +22,9 @@ while True:
 	for sock in readsock:
 
 		if sock is not sockClient:
-			newMessage = sys.stdin.readLine()
+			newMessage = sys.stdin.readline()
 			sockClient.send(newMessage)
-			sys.stdout.write("Me:")
+			sys.stdout.write('> ')
 			sys.stdout.flush()
 		else:
 			newData = sock.recv(4096)
@@ -33,5 +33,5 @@ while True:
 				sys.exit()
 			else:
 				sys.stdout.write(newData)
-				sys.stdout.write("Me:")
+				sys.stdout.write('> ')
 				sys.stdout.flush()
